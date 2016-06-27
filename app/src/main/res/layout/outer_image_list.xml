@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:text="May 15, 2016"
+        android:id="@+id/img_date"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+
+        />
+
+    <phamhuy.thanh.imagegallery.NonScrollableGridView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/grid_image_thumbnail"
+        android:numColumns="5"
+        android:stretchMode="none"
+        android:horizontalSpacing="20px"
+        android:verticalSpacing="20px"
+        >
+    </phamhuy.thanh.imagegallery.NonScrollableGridView>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+</LinearLayout>
