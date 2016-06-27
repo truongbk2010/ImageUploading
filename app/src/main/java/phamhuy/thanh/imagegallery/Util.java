@@ -2,16 +2,10 @@ package phamhuy.thanh.imagegallery;
 
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -82,16 +76,18 @@ public class Util {
                 URL url = new URL(upLoadServerUri);
                 // Open a HTTP  connection to  the URL
                 conn = (HttpURLConnection) url.openConnection();
-                conn.setDoInput(true); // Allow Inputs
-                conn.setDoOutput(true); // Allow Outputs
-                conn.setUseCaches(false); // Don't use a Cached Copy
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
                 conn.setRequestMethod("PUT");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
                 conn.setRequestProperty("Connection", "Keep-Alive");
-                conn.setRequestProperty("Content-Type", "image/jpg");
+                conn.setRequestProperty("Content-Type", "image/jpeg");
 
                 dos = new DataOutputStream(conn.getOutputStream());
                 // create a buffer of  maximum size
                 bytesAvailable = fileInputStream.available();
+                Log.d(TAG, "Data is available: " + bytesAvailable);
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
                 buffer = new byte[bufferSize];
                 // read file and write it into form...
@@ -128,58 +124,4 @@ public class Util {
 
         } // End else block
     }
-
-    public static String postData(String serverUrl,String dataToSend){
-        try {
-            URL url = new URL(serverUrl);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            //set timeout of 30 seconds
-            con.setConnectTimeout(1000 * 30);
-            con.setReadTimeout(1000 * 30);
-            //method
-            con.setRequestMethod("PUT");
-            con.setRequestProperty("Connection", "Keep-Alive");
-            con.setRequestProperty("Content-Type", "image/jpg");
-
-            OutputStream os = con.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os,"UTF-8"));
-
-            //make request
-            writer.write(dataToSend);
-            writer.flush();
-            writer.close();
-            os.close();
-
-            //get the response
-            int responseCode = con.getResponseCode();
-
-            if(responseCode == HttpURLConnection.HTTP_OK){
-                //read the response
-                StringBuilder sb = new StringBuilder();
-
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(con.getInputStream()));
-                String line;
-
-                //loop through the response from the server
-                while ((line = reader.readLine()) != null){
-                    sb.append(line).append("\n");
-                }
-
-                //return the response
-                return sb.toString();
-            }else{
-                Log.e(TAG,"ERROR - Invalid response code from server "+ responseCode);
-                return null;
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e(TAG,"ERROR "+e);
-            return null;
-        }
-    }
-
-
-
 }

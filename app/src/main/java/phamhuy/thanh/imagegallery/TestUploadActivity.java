@@ -1,29 +1,20 @@
 package phamhuy.thanh.imagegallery;
 
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TestUploadActivity extends AppCompatActivity {
     static String TAG = "LEGEND";
@@ -73,28 +64,10 @@ public class TestUploadActivity extends AppCompatActivity {
                     JSONObject one_image = object.getJSONArray("images").getJSONObject(0);
                     String url_upload = one_image.getString("url");
                     Log.d(TAG, "Uploading ... to " + url_upload);
-//                    ----------
-                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-                    Log.d(TAG, "Bitmap length: " + bitmap.getByteCount());
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    //compress the image to jpg format
-                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
-                    /*
-                    * encode image to base64 so that it can be picked by saveImage.php file
-                    * */
-                    String encodeImage = Base64.encodeToString(byteArrayOutputStream.toByteArray(),Base64.DEFAULT);
-                    try{
-                        String response = Util.postData(url_upload,encodeImage);
-
-                    }catch (Exception e){
-                        e.printStackTrace();
-                        Log.e(TAG,"ERROR  "+e);
-                        return null;
-                    }
+                    Util.uploadFile(imagePath, url_upload);
 
                 } catch (Exception e) {
                     Log.d(TAG, "Exception occurred");
-
                 }
                 return null;
             }
@@ -109,32 +82,9 @@ public class TestUploadActivity extends AppCompatActivity {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
             }
-
         }.execute();
 
-
     }
 
 
-    private String hashMapToUrl(HashMap<String, String> params) throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-        for(Map.Entry<String, String> entry : params.entrySet()){
-            if (first)
-                first = false;
-            else
-                result.append("&");
-
-            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-            result.append("=");
-            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-        }
-
-        return result.toString();
-    }
-
-    public void uploadAction(View v) {
-        Log.d(TAG, "Upload image to server");
-
-    }
 }

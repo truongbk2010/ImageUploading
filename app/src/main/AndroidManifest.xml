@@ -14,8 +14,8 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TestUploadActivity">
-        <!--<activity android:name=".MasterGalleryActivity">-->
+        <!--<activity android:name=".TestUploadActivity">-->
+        <activity android:name=".MasterGalleryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
