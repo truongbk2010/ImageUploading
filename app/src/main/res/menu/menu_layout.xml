@@ -17,13 +17,13 @@
         android:title="Upload"
         app:showAsAction="ifRoom" />
     <!-- Upload -->
-    <item
-        android:id="@+id/menu_net"
-        android:title="Network"
-        app:showAsAction="ifRoom" />
+    <!--<item-->
+        <!--android:id="@+id/menu_net"-->
+        <!--android:title="Network"-->
+        <!--app:showAsAction="ifRoom" />-->
     <!-- Local -->
-    <item
-        android:id="@+id/menu_local"
-        android:title="Local"
-        app:showAsAction="ifRoom" />
+    <!--<item-->
+        <!--android:id="@+id/menu_local"-->
+        <!--android:title="Local"-->
+        <!--app:showAsAction="ifRoom" />-->
 </menu>

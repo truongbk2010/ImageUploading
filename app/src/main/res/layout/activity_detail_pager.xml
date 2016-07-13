@@ -4,22 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="phamhuy.thanh.imagegallery.MasterGalleryActivity">
+    tools:context="phamhuy.thanh.imagegallery.DetailPagerActivity">
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/detailtoolbar"
         android:theme="@style/ToolBarTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         app:titleTextColor="@android:color/white"/>
-
-    <phamhuy.thanh.imagegallery.ScalableListView
-        android:layout_margin="8dp"
-        android:layout_below="@+id/toolbar"
-        android:id="@+id/outer_list_image"
+    <phamhuy.thanh.imagegallery.ExtendedViewPager
+        android:id="@+id/image_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-
+        android:layout_height="match_parent"
+        android:visibility="visible"/>
 </RelativeLayout>

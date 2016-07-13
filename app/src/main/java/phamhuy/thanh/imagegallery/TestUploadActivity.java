@@ -33,7 +33,7 @@ public class TestUploadActivity extends AppCompatActivity {
                 //Query short theo DATE_ADD, DATE_TAKEN, DATE_MODIFY
                 MediaStore.Images.Media.DATE_ADDED + " DESC"
         );
-        cursor.moveToFirst();
+
         final String imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
         File file = new File(imagePath);
         final String strFileName = file.getName();

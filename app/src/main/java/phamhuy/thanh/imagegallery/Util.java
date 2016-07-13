@@ -2,14 +2,22 @@ package phamhuy.thanh.imagegallery;
 
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Truong on 27/6/2016.
@@ -52,9 +60,9 @@ public class Util {
     }
 
 
-    public static int uploadFile(String sourceFileUri, String upLoadServerUri) {
+    public static int uploadFile(String filepath, String upLoadServerUrl) {
 
-        String fileName = sourceFileUri;
+        String fileName = filepath;
 
         HttpURLConnection conn = null;
         DataOutputStream dos = null;
@@ -62,7 +70,7 @@ public class Util {
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
         int maxBufferSize = 1 * 1024 * 1024;
-        File sourceFile = new File(sourceFileUri);
+        File sourceFile = new File(filepath);
         int serverResponseCode = 0;
         if (!sourceFile.isFile()) {
             Log.d(TAG, "File not found");
@@ -73,7 +81,7 @@ public class Util {
 
                 // open a URL connection to the Servlet
                 FileInputStream fileInputStream = new FileInputStream(sourceFile);
-                URL url = new URL(upLoadServerUri);
+                URL url = new URL(upLoadServerUrl);
                 // Open a HTTP  connection to  the URL
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setReadTimeout(15000);
@@ -82,7 +90,20 @@ public class Util {
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
                 conn.setRequestProperty("Connection", "Keep-Alive");
-                conn.setRequestProperty("Content-Type", "image/jpeg");
+                String imageType = filepath.toUpperCase();
+               // boolean matchJPG = imageType.matches("JPG$");
+                //boolean matchPNG = imageType.matches("PNG$");
+
+                if (imageType.contains(".JPG")) {
+                    conn.setRequestProperty("Content-Type", "image/jpeg");
+                } else if (imageType.contains(".PNG")) {
+                    conn.setRequestProperty("Content-Type", "image/png");
+                } else {
+                    fileInputStream.close();
+                    Log.d(TAG, "Cannot upload image from source URI: " + filepath);
+                    return 0;
+                }
+
 
                 dos = new DataOutputStream(conn.getOutputStream());
                 // create a buffer of  maximum size
@@ -123,5 +144,45 @@ public class Util {
             return serverResponseCode;
 
         } // End else block
+    }
+
+    public static List<String> getListURLUpload(List<String> listNames) {
+        List<String> listUrls = new ArrayList<>();
+        String params = "";
+        if (listNames.size() > 0) {
+            for (String s : listNames) {
+                params = params + s + ",";
+            }
+            params = params.substring(0, params.length() - 1);
+            Log.d(TAG, "List params : " + params);
+        } else {
+            return listUrls;
+        }
+        try {
+            URL url = new URL("http://web.dev.fshare.vn/test-image?action=upload&bucket=user_test&filename=" + params);
+            Log.d(TAG, "URL is : " + url);
+
+            URLConnection connection = url.openConnection();
+            connection.connect();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            String content = sb.toString();
+            JSONObject object = new JSONObject(content);
+            JSONArray jsonArray = object.getJSONArray("images");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonImage = jsonArray.getJSONObject(i);
+                String url_upload = jsonImage.getString("url");
+                Log.d(TAG, "URL for upload " + url_upload);
+                listUrls.add(url_upload);
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "Exception occurred");
+        }
+        return listUrls;
     }
 }
